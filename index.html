@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://unpkg.com/react@17/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@17/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script src="https://unpkg.com/react-transition-group/dist/react-transition-group.js"></script>
+
+    <script src="https://kit.fontawesome.com/4eec790ce9.js" crossorigin="anonymous"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.0.2/marked.min.js"></script>
+
+    <link rel="stylesheet" href="style.css">    
+
+    
+
+    <title>Document</title>
+</head>
+<body>
+
+    <div id="app">
+
+
+    </div>
+
+    <script type="text/babel" >
+
+
+
+
+const placeholder = `
+# Bienvenido al Markdown en React
+---
+## Esta es una cabecera H2
+---
+### And here's some other cool stuff:
+---
+**bold text**
+---
+[GitHub](http://github.com) 
+
+---
+- [x] Write the press release
+- [ ] Update the website
+- [ ] Contact the media
+---
+First Header | Second Header
+------------ | -------------
+Content cell 1 | Content cell 2
+Content column 1 | Content column 2
+---
+*italicized text* 
+
+---
+> blockquote
+
+> blockquote
+
+> blockquote
+
+---
+\`code\`
+---
+\`\`\`javascript
+function test() {
+ console.log("look ma, no spaces");
+}
+\`\`\`
+---
+![alt text](https://sc04.alicdn.com/kf/U0721a48732814105aae97d2245765dd2a.png)
+---
+
+`;
+
+
+marked.setOptions({
+  renderer: new marked.Renderer(),
+  gfm: true,
+  breaks: true
+});
+
+
+class Editor extends React.Component{
+  constructor(props){
+    super(props);
+  }
+  render(){
+    return(
+      <div className="contenedor">
+          <div className="header">Editor <button className="btn" onClick={this.props.handleShow}>Help!!!</button></div>
+          <textarea onChange={this.props.onChange} id="editor" placeholder="..." value={this.props.editor}></textarea>
+        </div>
+    );
+  }
+}    
+
+class Preview extends React.Component{
+  constructor(props){
+    super(props);
+  }
+  render(){
+    return(
+        <div className="contenedor">
+          <div className="header">Preview</div>
+          <div id="preview"
+            dangerouslySetInnerHTML={{
+              __html:marked.parse(this.props.preview)
+              }}>
+            </div>
+        </div>
+    );
+  }
+}  
+
+class Help extends React.Component{
+  constructor(props){
+    super(props);
+  }
+
+  render(){
+    return(
+      <div className="help" id="help">
+
+        <div className="help_cont">
+            <div className="header">
+              Help
+              <button className="btn" onClick={this.props.handleHide}>Cerrar</button>
+            </div>
+            <div className="help_body">
+
+              <div className="help_card">
+                <h2>HEADERS</h2>
+                <p># This is an &lt;h1&gt; tag <br/>
+                      ## This is an &lt;h2&gt; tag <br/>
+                      ###### This is an &lt;h6&gt; tag <br/>
+                </p>
+              </div>
+
+              <div className="help_card">
+                <h2>EMPHASIS</h2>
+                <p>
+                  *This text will be italic*<br/>
+                  _This will also be italic_<br/>
+                  **This text will be bold**<br/>
+                  __This will also be bold__<br/>
+                  *You **can** combine them*<br/>
+                </p>
+              </div>
+
+              <div className="help_card">
+                <h2>LISTS</h2>
+                <p>
+                  * Item 1<br/>
+                  * Item 2<br/>
+                    * Item 2a<br/>
+                    * Item 2b<br/>
+                </p>
+              </div>
+
+              <div className="help_card">
+                <h2>IMAGES</h2>
+                <p>
+                  ![GitHub Logo](/images/logo.png)<br/><br/>
+                  Format: ![Alt Text](url)
+                </p>
+              </div>
+
+              <div className="help_card">
+                <h2>LINKS</h2>
+                <p>
+                  http://github.com - automatic!<br/><br/>
+                  [GitHub](http://github.com)
+                </p>
+              </div>
+
+              <div className="help_card">
+                <h2>BLOCKQUOTES</h2>
+                <p>
+                  As Kanye West said:<br/>
+                  &gt; We're living the future so<br/>
+                  &gt; the present is our past.
+                </p>
+              </div>
+
+              <div className="help_card">
+                <h2>TABLES</h2>
+                <p>
+                  First Header | Second Header<br/>
+                  ------------ | -------------<br/>
+                  Content cell 1 | Content cell 2<br/>
+                  Content column 1 | Content column 2
+                </p>
+              </div>
+
+            </div>
+
+        </div> 
+      </div>
+    );
+
+  }
+}
+
+
+
+class App extends React.Component{
+  constructor(props){
+    super(props);
+    this.state={
+      editor: "editor",
+      preview: "preview",
+      help: false
+    };
+    this.onChange=this.onChange.bind(this);
+    this.handleHide=this.handleHide.bind(this);
+    this.handleShow=this.handleShow.bind(this);
+  }
+
+  componentDidMount() {
+
+    this.setState({
+      editor: placeholder,
+      preview: placeholder
+    });
+
+  }
+
+  handleShow(){
+    this.setState({
+      help: true
+    });
+    console.log(this.state.help);
+  }
+
+  handleHide(){
+    this.setState({
+      help: false
+    });
+  }
+
+  onChange(event){
+    this.setState({
+      editor: event.target.value,
+      preview: event.target.value
+    });
+  }
+
+  render(){
+      if(this.state.help){
+        return(
+        <div id="body">
+          <Editor editor={this.state.editor} onChange={this.onChange} handleShow={this.handleShow}/>
+          <Preview preview={this.state.preview}/>
+          <Help handleHide={this.handleHide} />
+        </div>
+       );  
+      }else{
+        return(
+        <div id="body">
+          <Editor editor={this.state.editor} onChange={this.onChange} handleShow={this.handleShow}/>
+          <Preview preview={this.state.preview}/>
+        </div>
+       );  
+      }
+
+  }
+}
+
+
+ReactDOM.render(<App />, document.getElementById('app'));
+
+    </script>
+    
+    
+</body>
+</html>
